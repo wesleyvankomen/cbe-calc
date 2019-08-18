@@ -1,28 +1,31 @@
+/* Generate these with the incldued python script. */
 var testPagePaths = [
-	{path: "testpages/Duplicate Retake after K Grade.html", name: "Duplicate Retake after K Grade"},
-	{path: "testpages/Test A(star) & B grade.html", name: "Test A(star) & B grade"},
-	{path: "testpages/Test A(star) grade with Retake.html", name: "Test A(star) grade with Retake"},
-	{path: "testpages/Test B(star) & A grade.html", name: "Test B(star) & A grade"},
-	{path: "testpages/Test B(star) grade with retake.html", name: "Test B(star) grade with retake"},
-	{path: "testpages/Test B(star) grade.html", name: "Test B(star) grade"},
-	{path: "testpages/Test C(star) grade with Retake.html", name: "Test C(star) grade with Retake"},
-	{path: "testpages/Test C(star) grade.html", name: "Test C(star) grade"},
-	{path: "testpages/Test D(star) grade with Retake.html", name: "Test D(star) grade with Retake"},
-	{path: "testpages/Test D(star) grade.html", name: "Test D(star) grade"},
-	{path: "testpages/Test Duplicates.html", name: "Test Duplicates"},
-	{path: "testpages/Test Duplicates2.html", name: "Test Duplicates2"},
-	{path: "testpages/Test F(star) grade with Retake.html", name: "Test F(star) grade with Retake"},
-	{path: "testpages/Test F(star) grade.html", name: "Test F(star) grade"},
-	{path: "testpages/Test K.html", name: "Test K"},
-	{path: "testpages/Test KA KA-.html", name: "Test KA KA-"},
-	{path: "testpages/Test KB KB+.html", name: "Test KB KB+"},
-	{path: "testpages/Test KB- KC.html", name: "Test KB- KC"},
-	{path: "testpages/Test KC+ KC-.html", name: "Test KC+ KC-"},
-	{path: "testpages/Test KD KD+.html", name: "Test KD KD+"},
-	{path: "testpages/Test KD- KF.html", name: "Test KD- KF"},
-	{path: "testpages/Test KZ Z.html", name: "Test KZ Z"},
-	{path: "testpages/testPage Template.html", name: "testPage Template"},
-	{path: "testpages/testPage2.html", name: "testPage2"}
+    {path: "testpages/Duplicate Retake after K Grade.html", name: "Duplicate Retake after K Grade"},
+    {path: "testpages/oddball course numbers.html", name: "oddball course numbers"},
+    {path: "testpages/STATUS grades.html", name: "STATUS grades"},
+    {path: "testpages/Test A(star) & B grade.html", name: "Test A(star) & B grade"},
+    {path: "testpages/Test A(star) grade with Retake.html", name: "Test A(star) grade with Retake"},
+    {path: "testpages/Test B(star) & A grade.html", name: "Test B(star) & A grade"},
+    {path: "testpages/Test B(star) grade with retake.html", name: "Test B(star) grade with retake"},
+    {path: "testpages/Test B(star) grade.html", name: "Test B(star) grade"},
+    {path: "testpages/Test C(star) grade with Retake.html", name: "Test C(star) grade with Retake"},
+    {path: "testpages/Test C(star) grade.html", name: "Test C(star) grade"},
+    {path: "testpages/Test D(star) grade with Retake.html", name: "Test D(star) grade with Retake"},
+    {path: "testpages/Test D(star) grade.html", name: "Test D(star) grade"},
+    {path: "testpages/Test Duplicates.html", name: "Test Duplicates"},
+    {path: "testpages/Test Duplicates2.html", name: "Test Duplicates2"},
+    {path: "testpages/Test F(star) grade with Retake.html", name: "Test F(star) grade with Retake"},
+    {path: "testpages/Test F(star) grade.html", name: "Test F(star) grade"},
+    {path: "testpages/Test K.html", name: "Test K"},
+    {path: "testpages/Test KA KA-.html", name: "Test KA KA-"},
+    {path: "testpages/Test KB KB+.html", name: "Test KB KB+"},
+    {path: "testpages/Test KB- KC.html", name: "Test KB- KC"},
+    {path: "testpages/Test KC+ KC-.html", name: "Test KC+ KC-"},
+    {path: "testpages/Test KD KD+.html", name: "Test KD KD+"},
+    {path: "testpages/Test KD- KF.html", name: "Test KD- KF"},
+    {path: "testpages/Test KZ Z.html", name: "Test KZ Z"},
+    {path: "testpages/testPage Template.html", name: "testPage Template"},
+    {path: "testpages/test_print.html", name: "test_print"}
 	]
 
 var testPages = [];
@@ -33,10 +36,9 @@ function calculateGPA() {
 		var doc = parser.parseFromString(htmlFile.html, "text/html");
 		var text = doc.getElementsByClassName("pagebodydiv")[0].children[1].innerText;
 
-
-		var classlist = parseClassesCBE({data:text});
-		var gradeInfoCBE = calculateCBEGPA(classlist);
-		var gradeInfoMSCM = calculateMSCMGPA(classlist);
+    var classList = parseTranscript(text);
+		var gradeInfoCBE = calculateCBEGPA(classList);
+		var gradeInfoMSCM = calculateMSCMGPA(classList);
 		var cbeGPA = gradeInfoCBE.gpa;
 		var mscmGPA = gradeInfoMSCM.gpa;
 		// console.log(classlist);
@@ -49,9 +51,13 @@ function calculateGPA() {
 		if (gpas[0].toFixed(2) === cbeGPA) {
 			testPassed.cbe = true;
 		}
+
+		/* if there was no MSCM GPA specified in the file, then
+		   it's supposed to be the same as CBE*/
 		if (typeof gpas[1] === 'undefined') {
-			testPassed.mscm = true;
-		} else if (gpas[1].toFixed(2) === mscmGPA) {
+			gpas[1] = gpas[0];
+		}
+		if (gpas[1].toFixed(2) === mscmGPA) {
 			testPassed.mscm = true;
 		}
 
@@ -74,12 +80,13 @@ function calculateGPA() {
 		textNode = document.createTextNode(words);
 		innerDiv.appendChild(textNode);
 		
-		if (typeof gpas[1] !== 'undefined') {
-			innerDiv.appendChild(document.createElement("br"));
-			var words = "MSCM is " + mscmGPA + ", should be " + gpas[1].toFixed(2); 
-			textNode = document.createTextNode(words);
-			innerDiv.appendChild(textNode);
-		} 
+		/* if there was no MSCM GPA specified in the file, then
+		   it's supposed to be the same as CBE*/
+
+		innerDiv.appendChild(document.createElement("br"));
+		var words = "MSCM is " + mscmGPA + ", should be " + gpas[1].toFixed(2); 
+		textNode = document.createTextNode(words);
+		innerDiv.appendChild(textNode);
 
 		/* last element processed */
 		if (index === testPages.length-1) {

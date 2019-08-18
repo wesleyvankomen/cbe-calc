@@ -58,6 +58,7 @@ body {
   background: rgba(255, 255, 255, .35)
 }
 
+
 ul {
   margin-top: 10;
   margin-left: -20;
@@ -77,6 +78,8 @@ li:not(:last-child) {
 
 #toggleSwitch2 {
   width: 200;
+  height: 35;
+  margin: 0;
 }
 
 #toggleDiv {
@@ -84,6 +87,10 @@ li:not(:last-child) {
   left: 500;
   top: 460;
   z-index: 2;
+}
+
+#gpa-minimum-text {
+    color: black;
 }
 
 #CBEBlurb {
@@ -105,6 +112,13 @@ li:not(:last-child) {
   color: #18324A; rgba(0, 63, 135, 1);
 }
 
+#closeButton {
+  position: absolute;
+  left: 10;
+  top: 25;
+  color: blue;
+}
+
 #menuText{
   color: white;
   text-align:center;
@@ -112,6 +126,19 @@ li:not(:last-child) {
   margin-top: 50;
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.invalidInput {
+  background-color: red;
+  color: #dbdbdb;
+  font-weight: bold;
+}
+
+/* #gradeblock is there to make it more specific, and
+ * take priority over .even */
+#gradeblock .invalidCourse {
+    background-color: red;
+    color: black;
 }
 
 input[type=checkbox] {
@@ -184,6 +211,7 @@ input[type=checkbox]:checked ~ .backBlur .col-md-3 {
   margin: 10px;
   text-shadow: 1px 1px 1px #000;
 }
+
 .menu {
   list-style: none;
   padding: 0;
@@ -212,6 +240,7 @@ input[type=checkbox]:checked ~ .backBlur .col-md-3 {
 
 #gpaText {
   margin-top: 3; /*old*/
+  color: #32CD32; /*Green*/
 }
 
 #appName {
@@ -230,27 +259,36 @@ input[type=checkbox]:checked ~ .backBlur .col-md-3 {
 #printButton {
   position: absolute;
   width: 125;
-  height: 45;
+  height: 40;
   border-radius: 10px;
-  left: 670; /*537.5*/
-  top: 550;
+  left: 14; /*537.5*/
+  top: 13;
   background: rgba(0, 63, 135, 1); /*WWU Blue*/
   z-index: 2;
   font-family: 'Avenir';
   font-size: 19;
+  border-top: 1px solid slategrey;
+  border-left: 1px solid slategrey;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+
 }
 
 #printButton2 {
   position: absolute;
   width: 125;
-  height: 45;
+  height: 40;
   border-radius: 10px;
-  left: 670; /*537.5*/
-  top: 550;
+  left: 14; /*537.5*/
+  top: 13;
   background: rgba(0, 63, 135, 1); /*WWU Blue*/
   z-index: 2;
   font-family: 'Avenir';
   font-size: 19;
+   border-top: 1px solid slategrey;
+   border-left: 1px solid slategrey;
+   border-right: 1px solid black;
+   border-bottom: 1px solid black;
 }
 /*
 #printButton {
@@ -370,11 +408,7 @@ div.stats{
   /*background-color: rgba(0,0,0, 0.5); Black */
 }
 
-#good {
-  color: #32CD32; /*Green*/
-}
-
-#bad {
+#gpaText .bad {
   color: #EF2323; /*Red*/
 }
 
@@ -387,16 +421,8 @@ div.stats{
   padding: 20;
 }
 
-#onPageCBE{
-
-}
-
-#onPageMSCM{
-
-}
-
-#composite{
-  color: darkgray;
+.oldDupe #editableField {
+  color: darkgray !important;
   text-shadow: 1px 1px black;
 }
 
@@ -606,4 +632,52 @@ body.has-active-menu {
 .c-menu--slide-bottom.is-active,
 .c-menu--push-bottom.is-active {
   transform: translateY(0);
+}
+
+.popover-wrapper .editable-error {
+    position: absolute;
+    top: -59px;
+    background: #FFF;
+    border: 1px solid #AAA;
+    border-radius: 5px;
+    padding: 7px;
+    width: auto;
+    display: inline-block;
+    left: 50%;
+    z-index: 101;
+}
+
+.popover-wrapper .editable-error:before {
+    content:"";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #AAA;
+    position:absolute;
+    bottom:-10px;
+}
+
+.popover-wrapper .editable-error:after {
+    content:"";
+    width:0;
+    height:0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid #FFF;
+    position:relative;
+    bottom:-9px;
+}
+
+@media screen and (min-width: 750px) {
+    .popover-wrapper .editable-error {
+        margin-left: -260px;
+    }
+    .popover-wrapper form:before, .popover-wrapper .editable-error:before {
+        left:100px;
+    }
+
+    .popover-wrapper form:after, .popover-wrapper .editable-error:after {
+        left:101px;
+    }
 }

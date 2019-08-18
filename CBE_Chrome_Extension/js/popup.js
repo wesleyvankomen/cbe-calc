@@ -4,7 +4,7 @@
  * @param {function(string)} callback - called when the URL of the current tab
  *   is found.
  */
-function getCurrentTabUrl(callback) {
+function getCurrentTab(callback) {
   var queryInfo = {
     active: true,
     currentWindow: true
@@ -12,7 +12,7 @@ function getCurrentTabUrl(callback) {
   chrome.tabs.query(queryInfo, function(tabs) {
     var url = tabs[0].url;
     console.assert(typeof url == 'string', 'tab.url should be a string');
-    callback(url);
+    callback(tabs[0]);
   });
 }
 /*
@@ -75,47 +75,43 @@ window.addEventListener('load', function() {
 
 //Decide what to do when DOM Content is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    getCurrentTabUrl(function(url) {
-        if(url=="https://admin.wwu.edu/pls/wwis/wwskahst.WWU_ViewTran"){
-            show('onPageCBE');
+    getCurrentTab(function(tab) {
+        if(tab.url=="https://admin.wwu.edu/pls/wwis/wwskahst.WWU_ViewTran"){
+            show('applicationView');
             hide('notOnPage');
-            hide('onPageMSCM');
             show('toggleSwitch');
           chrome.tabs.sendMessage(
-              tabs[0].id,
+              tab.id,
               {from: 'popup', subject: 'DOMInfo'},
               // ...also specifying a callback to be called
               //    from the receiving end (content script)
               setDOMInfo);
         }
-        else if(url=="https://admin.wwu.edu/pls/wwis/wwfkfhst.P_FacDispCurrent"){
-            show('onPageCBE');
+        else if(tab.url=="https://admin.wwu.edu/pls/wwis/wwfkfhst.P_FacDispCurrent"){
+            show('applicationView');
             hide('notOnPage');
-            hide('onPageMSCM');
             show('toggleSwitch');
           chrome.tabs.sendMessage(
-              tabs[0].id,
+              tab.id,
               {from: 'popup', subject: 'DOMInfo'},
               // ...also specifying a callback to be called
               //    from the receiving end (content script)
               setDOMInfo);
         }
         //pulls data from any test page starting with 'testPage'
-        else if(url.includes("/testpages/")){
-            show('onPageCBE');
+        else if(tab.url.includes("/testpages/")){
+            show('applicationView');
             hide('notOnPage');
-            hide('onPageMSCM');
             show('toggleSwitch');
           chrome.tabs.sendMessage(
-              tabs[0].id,
+              tab.id,
               {from: 'popup', subject: 'DOMInfo'},
               // ...also specifying a callback to be called
               //    from the receiving end (content script)
               setDOMInfo);
         }else{
             show('notOnPage');
-            hide('onPageCBE');
-            hide('onPageMSCM');
+            hide('applicationView');
             hide('toggleSwitch');
             hide('toggleDiv');
         };
